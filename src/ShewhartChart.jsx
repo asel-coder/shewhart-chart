@@ -9,6 +9,15 @@ import {
     ResponsiveContainer,
     ReferenceLine,
 } from "recharts";
+import DataGrid, {
+    Column,
+    SearchPanel,
+    FilterRow,
+    Scrolling,
+    Paging,
+    Pager,
+} from "devextreme-react/data-grid";
+import "devextreme/dist/css/dx.light.css";
 
 const ShewhartChart = ({ data, mean, stdDev }) => {
     if (!data || data.length === 0) return <p>No data provided</p>;
@@ -96,41 +105,60 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
             {/* === TABLE SECTION === */}
             <div style={{ width: "30%", height: "100%", overflowY: "auto" }}>
                 <h3>Data Table</h3>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                    <tr>
-                        <th style={{ borderBottom: "1px solid #ccc", textAlign: "left" }}>Name</th>
-                        <th style={{ borderBottom: "1px solid #ccc", textAlign: "right" }}>Value</th>
-                        <th style={{ borderBottom: "1px solid #ccc", textAlign: "center" }}>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {chartData.map((entry, index) => (
-                        <tr
-                            key={index}
-                            onClick={() => setSelectedIndex(index)}
-                            style={{
-                                backgroundColor:
-                                    index === selectedIndex ? "rgba(255, 165, 0, 0.2)" : "transparent",
-                                cursor: "pointer",
-                            }}
-                        >
-                            <td style={{ color: entry.color }}>{entry.name}</td>
-                            <td style={{ textAlign: "right", color: entry.color }}>
-                                {entry.value.toFixed(2)}
-                            </td>
-                            <td
+                <DataGrid
+                    dataSource={chartData}
+                    keyExpr="name" // or another unique field if available
+                    height="100%"
+                    showBorders={true}
+                    rowAlternationEnabled={true}
+                    focusedRowEnabled={true}
+                    onFocusedRowChanged={(e) => setSelectedIndex(e.rowIndex)}
+                    focusedRowIndex={selectedIndex}
+                    hoverStateEnabled={true}>
+
+                    {/* ✅ Enable searching */}
+                    <SearchPanel visible={true} highlightCaseSensitive={false} />
+
+                    {/* ✅ Enable filtering by column */}
+                    <FilterRow visible={true} />
+
+                    {/* ✅ Scrolling and paging for large datasets */}
+                    <Scrolling mode="virtual" />
+                    <Paging defaultPageSize={10} />
+                    <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20]} />
+
+                    {/* ✅ Define columns */}
+                    <Column
+                        dataField="name"
+                        caption="Name"
+                        cellRender={({ data }) => (
+                            <span style={{ color: data.color }}>{data.name}</span>
+                        )}
+                    />  <Column
+                        dataField="value"
+                        caption="Value"
+                        dataType="number"
+                        alignment="right"
+                        cellRender={({ data }) => (
+                            <span style={{ color: data.color }}>{data.value.toFixed(2)}</span>
+                        )}
+                    />
+                    <Column
+                        dataField="status"
+                        caption="Status"
+                        alignment="center"
+                        cellRender={({ data }) => (
+                            <span
                                 style={{
-                                    textAlign: "center",
-                                    color: entry.status === "out of range" ? "red" : "green",
+                                    color: data.status === "out of range" ? "red" : "green",
                                 }}
                             >
-                                {entry.status}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+              {data.status}
+            </span>
+                        )}
+                    />
+                </DataGrid>
+
             </div>
         </div>
     );
