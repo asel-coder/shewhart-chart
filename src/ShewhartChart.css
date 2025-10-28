@@ -1,107 +1,181 @@
+/* ================================
+   FONT & GLOBAL STYLES
+================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+    color: #1e293b; /* dark blue-gray */
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* ================================
+   WRAPPER & CONTAINER
+================================ */
+.shewhart-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #f5f7fa;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
 .shewhart-container {
     display: flex;
     flex-direction: row;
-    width: 95vw;
-    height: 80vh;
-    gap: 60px;
+    justify-content: space-between;
+    width: 95%;
+    height: 75vh;
+    gap: 50px;
     padding: 20px;
-    box-sizing: border-box;
-    background-color: lightblue;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    /*background-color: #f8fafc; /* soft card-like background */
+   /* border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;*/
 }
 
-/* Left section for chart */
+/* ================================
+   TITLE
+================================ */
+.chart-title {
+    text-align: left;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e293b;
+    width: 95%;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+/* ================================
+   CHART SECTION
+================================ */
 .chart-section {
-    width: 68%;  /* slightly reduced */
+    width: 68%;
     height: 75vh;
-    margin: auto; /* centers with space around */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-
+    gap: 10px;
 }
 
-/* Mean + std dev info bar */
 .mean-info-box {
     width: 40%;
     height: 20%;
-    background-color: #e0f7fa;
-    border: 2px solid #b2ebf2;
+    background-color: #e0f2fe; /* light blue */
+    border: 1px solid #bae6fd;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 
     display: flex;
     justify-content: space-around;
     align-items: center;
-    text-align: center;
     padding: 10px;
-    margin-right: 10px;
 }
-.stat-item {
-     display: flex;
-     flex-direction: column;
-     align-items: center;
- }
 
-/* Label styles */
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .stat-label {
-    font-weight: bold;
+    font-weight: 600;
     font-size: 25px;
+    color: #1e293b;
     margin-bottom: 5px;
 }
+
 .stat-value {
     font-size: 30px;
-    font-weight: normal;
+    font-weight: 400;
+    color: #2563eb; /* main accent */
 }
+
 .chart-box {
     width: 100%;
     height: 80%;
     background-color: #ffffff;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
-    margin: 10px 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
 
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Ensure chart fills its area nicely*/
 .chart-box .recharts-responsive-container {
     width: 100% !important;
     height: 100% !important;
 }
 
-/* Right section for table */
+/* Hover effect for polish */
+.chart-box:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* ================================
+   TABLE SECTION
+================================ */
 .table-section {
     width: 30%;
     height: 100%;
-    overflow-y: hidden;
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    align-items: stretch;  /* instead of center → lets children fill width */
-    background-color: white;
-    border-radius: 8px;
-    padding: 0;            /* remove padding that caused side gaps */
+    align-items: stretch;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 0;
     box-sizing: border-box;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .table-section h3 {
     margin: 0;
-    padding: 15px 20px; /* inner spacing only for the header */
+    padding: 15px 20px;
     text-align: left;
     width: 100%;
-    border-bottom: 1px solid #eee; /* optional subtle separator */
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+    color: #1e293b;
 }
 
-.chart-title {
-    text-align: left;          /* align text to the left */
-    margin-bottom: 10px;
-    padding-bottom: 8px;       /* adds space between text and line */
-    border-bottom: 2px solid #333; /* the line under the title */
-    width: 100%;               /* line spans full width of the wrapper */
-    box-sizing: border-box;    /* ensures padding doesn’t affect width */
+/* DevExtreme Table Customization */
+.table-section .dx-datagrid-headers {
+    background-color: #f1f5f9; /* soft neutral gray-blue */
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.table-section .dx-datagrid-content {
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.table-section .dx-datagrid-rowsview .dx-row:hover {
+    background-color: #e0f2fe !important;
+}
+
+/* Hover and subtle polish for table */
+.table-section:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.2s ease-in-out;
 }
