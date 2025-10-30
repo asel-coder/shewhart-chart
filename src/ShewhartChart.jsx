@@ -65,7 +65,7 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
                 countAbove = countBelow = 0;
             }
 
-            if (countAbove >= 10 || countBelow >= 10) {
+            if (countAbove >= 8 || countBelow >= 8) {
                 return true;
             }
         }
@@ -91,7 +91,7 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
                 decCount = 1;
             }
 
-            if (incCount >= 8 || decCount >= 8) {
+            if (incCount >= 6 || decCount >= 6) {
                 return true;
             }
         }
@@ -123,7 +123,98 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
         return percentage < 70; // return TRUE when rule violated
     }, [data]);
 
+    const zoneBViolated = useMemo(() => {
+        if (!data || data.length < 3) return false;
 
+
+
+        for (let i = 0; i < data.length - 2; i++) {
+            const triple = data.slice(i, i + 3);
+
+            let countZoneB = triple.filter(point => {
+                const deviation = Math.abs(point.value - mean);
+                return deviation > 2 * stdDev && deviation < 3 * stdDev; // between 2σ and 3σ
+            }).length;
+
+            if (countZoneB >= 2) {
+                return true; // rule triggered
+            }
+        }
+
+        return false;
+    }, [data, mean, stdDev]);
+
+    const zoneCViolated = useMemo(() => {
+        if (!data || data.length < 5) return false;
+
+
+
+        for (let i = 0; i <= data.length - 5; i++) {
+            const window = data.slice(i, i + 5);
+
+            let countBeyond1Sigma = window.filter(point => {
+                const deviation = Math.abs(point.value - mean);
+                return deviation > stdDev && deviation < 3 * stdDev;
+            }).length;
+
+            if (countBeyond1Sigma >= 4) {
+                return true;
+            }
+        }
+
+        return false;
+    }, [data, mean, stdDev]);
+
+    const alternatingViolated = useMemo(() => {
+        if (!data || data.length < 14) return false;
+
+        // Helper to check if 14 points alternate direction
+        const isAlternating = (segment) => {
+            for (let i = 2; i < segment.length; i++) {
+                const prevDiff = segment[i - 1].value - segment[i - 2].value;
+                const currDiff = segment[i].value - segment[i - 1].value;
+
+                // If signs match or any diff is 0, not alternating
+                if (prevDiff === 0 || currDiff === 0) return false;
+                if ((prevDiff > 0 && currDiff > 0) || (prevDiff < 0 && currDiff < 0)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        // Slide a window of 14
+        for (let i = 0; i <= data.length - 14; i++) {
+            const window = data.slice(i, i + 14);
+            if (isAlternating(window)) return true;
+        }
+
+        return false;
+    }, [data]);
+
+    const lowVariationViolated = useMemo(() => {
+        if (!data || data.length < 15) return false;
+
+
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i++) {
+            const deviation = Math.abs(data[i].value - mean);
+
+            if (deviation <= stdDev) {
+                count++;
+            } else {
+                count = 0; // reset streak
+            }
+
+            if (count >= 15) {
+                return true;
+            }
+        }
+
+        return false;
+    }, [data, mean, stdDev]);
 
     return (
         <div className="shewhart-wrapper">
@@ -199,44 +290,108 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
                         <tbody>
                         <tr>
                             <td>
-                                <strong>Run Rule</strong>
+                                <strong>8 points on one side of mean</strong>
                             </td>
                             <td>
                                 {criterionViolated ? (
-                                    <span style={{ color: "red", fontWeight: "bold" }}>Criterion violated</span>
+                                    <span style={{ color: "red", fontWeight: "bold" }}>Violated</span>
                                 ) : (
-                                    <span style={{ color: "green", fontWeight: "bold" }}>No violations</span>
+                                    <span style={{ color: "green", fontWeight: "bold" }}>OK</span>
                                 )}
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>Trend Rule</strong>
+                                <strong>6 consecutive points trending up or down</strong>
                             </td>
                             <td>
                                 {trendViolated ? (
                                     <span style={{ color: "red", fontWeight: "bold" }}>
-                  Trend violated
+                  Violated
                 </span>
                                 ) : (
                                     <span style={{ color: "green", fontWeight: "bold" }}>
-                  No violations
+                  OK
                 </span>
                                 )}
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <strong>Normality Rule</strong>
+                                <strong>70% within 1σ</strong>
                             </td>
                             <td>
                                 {normalityViolated ? (
-                                    <span className="text-red-600 font-bold">
-        Normality violated
+                                    <span style={{ color: "red", fontWeight: "bold" }}>
+        Violated
       </span>
                                 ) : (
-                                    <span className="text-green-600 font-bold">
-        Normality OK
+                                    <span style={{ color: "green", fontWeight: "bold" }}>
+        OK
+      </span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>2 out of 3 points between 2σ and 3σ</strong>
+                            </td>
+                            <td>
+                                {zoneBViolated ? (
+                                    <span style={{ color: "red", fontWeight: "bold" }}>
+        Violated
+      </span>
+                                ) : (
+                                    <span style={{ color: "green", fontWeight: "bold" }}>
+        OK
+      </span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>4 out of 5 points beyond 1σ</strong>
+                            </td>
+                            <td>
+                                {zoneCViolated ? (
+                                    <span style={{ color: "red", fontWeight: "bold" }}>
+        Violated
+      </span>
+                                ) : (
+                                    <span style={{ color: "green", fontWeight: "bold" }}>
+        OK
+      </span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>14 points alternating up/down</strong>
+                            </td>
+                            <td>
+                                {alternatingViolated ? (
+                                    <span style={{ color: "red", fontWeight: "bold" }}>
+        Violated
+      </span>
+                                ) : (
+                                    <span style={{ color: "green", fontWeight: "bold" }}>
+        OK
+      </span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>15 points within 1σ of center line</strong>
+                            </td>
+                            <td>
+                                {lowVariationViolated ? (
+                                    <span style={{ color: "red", fontWeight: "bold" }}>
+        Violated
+      </span>
+                                ) : (
+                                    <span style={{ color: "green", fontWeight: "bold" }}>
+        OK
       </span>
                                 )}
                             </td>
