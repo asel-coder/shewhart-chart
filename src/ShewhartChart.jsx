@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMemo } from "react";
 import {
     LineChart,
     Line,
@@ -47,6 +48,82 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
     });
 
     const [selectedIndex, setSelectedIndex] = useState(null);
+
+
+    const criterionViolated = useMemo(() => {
+        let countAbove = 0;
+        let countBelow = 0;
+
+        for (const point of data) {
+            if (point.value > mean) {
+                countAbove++;
+                countBelow = 0;
+            } else if (point.value < mean) {
+                countBelow++;
+                countAbove = 0;
+            } else {
+                countAbove = countBelow = 0;
+            }
+
+            if (countAbove >= 10 || countBelow >= 10) {
+                return true;
+            }
+        }
+        return false;
+    }, [data, mean]);
+
+    // === Trend Rule Logic (8 values increasing or decreasing) ===
+    const trendViolated = useMemo(() => {
+        if (!data || data.length === 0) return false;
+
+        let incCount = 1;
+        let decCount = 1;
+
+        for (let i = 1; i < data.length; i++) {
+            if (data[i].value > data[i - 1].value) {
+                incCount++;
+                decCount = 1;
+            } else if (data[i].value < data[i - 1].value) {
+                decCount++;
+                incCount = 1;
+            } else {
+                incCount = 1;
+                decCount = 1;
+            }
+
+            if (incCount >= 8 || decCount >= 8) {
+                return true;
+            }
+        }
+
+        return false;
+    }, [data]);
+
+    // === Normality Rule: ≥70% within ±1σ from mean ===
+    const normalityViolated = useMemo(() => {
+        if (!data || data.length === 0) return false;
+
+        const values = data.map(d => d.value);
+
+        const mean =
+            values.reduce((a, b) => a + b, 0) / values.length;
+
+        const std = Math.sqrt(
+            values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) /
+            values.length
+        );
+
+        // Count points within ±1σ
+        const withinStdCount = values.filter(
+            v => Math.abs(v - mean) <= std
+        ).length;
+
+        const percentage = (withinStdCount / values.length) * 100;
+
+        return percentage < 70; // return TRUE when rule violated
+    }, [data]);
+
+
 
     return (
         <div className="shewhart-wrapper">
@@ -115,6 +192,58 @@ const ShewhartChart = ({ data, mean, stdDev }) => {
 
             {/* === TABLE SECTION === */}
             <div className="table-section">
+                {/* ✅ NEW CRITERIA TABLE */}
+                <div className="criteria-box">
+                    <h3>Shewhart Control Rules</h3>
+                    <table className="criteria-table">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <strong>Run Rule</strong>
+                            </td>
+                            <td>
+                                {criterionViolated ? (
+                                    <span style={{ color: "red", fontWeight: "bold" }}>Criterion violated</span>
+                                ) : (
+                                    <span style={{ color: "green", fontWeight: "bold" }}>No violations</span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Trend Rule</strong>
+                            </td>
+                            <td>
+                                {trendViolated ? (
+                                    <span style={{ color: "red", fontWeight: "bold" }}>
+                  Trend violated
+                </span>
+                                ) : (
+                                    <span style={{ color: "green", fontWeight: "bold" }}>
+                  No violations
+                </span>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Normality Rule</strong>
+                            </td>
+                            <td>
+                                {normalityViolated ? (
+                                    <span className="text-red-600 font-bold">
+        Normality violated
+      </span>
+                                ) : (
+                                    <span className="text-green-600 font-bold">
+        Normality OK
+      </span>
+                                )}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <h3>Data Table</h3>
                 <DataGrid
                     dataSource={chartData}
