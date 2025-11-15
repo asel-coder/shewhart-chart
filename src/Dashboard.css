@@ -1,0 +1,289 @@
+/* ==============================
+   GLOBAL STYLES
+============================== */
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #f2f2f2;
+}
+
+/* ==============================
+   DASHBOARD LAYOUT
+============================== */
+.dashboard {
+    display: grid;
+    grid-template-rows: 20% 80%;
+    height: calc(100vh - 2rem);
+    width: calc(100vw - 2rem);
+    padding: 1rem;
+    gap: 1rem;
+    box-sizing: border-box;
+}
+
+.top-section {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    gap: 0.75rem;
+    width: 100%;
+    height: 100%;
+}
+
+.bottom-section {
+    display: grid;
+    grid-template-columns: 70% 30%;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==============================
+   SHARED ELEMENT STYLES
+============================== */
+.card,
+.chart,
+.data-table,
+.rule-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* --- Cards --- */
+.card {
+    height: 2rem;
+}
+
+/* --- Cards column --- */
+.cards-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+}
+
+/* --- Rules grid --- */
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==============================
+   RULE CARDS
+============================== */
+.rule-card {
+    height: 2rem; /* adjust this value */
+    padding: 1rem;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.rule-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rule-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.rule-description {
+    font-weight: 500;
+    color: #333;
+    flex: 1;
+    margin: 0;
+    word-break: break-word;
+}
+
+.rule-status {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* --- Rule statuses --- */
+.rule-card.ok {
+    background: #f6fff6;
+}
+.rule-card.ok .rule-status {
+    color: #2e7d32;
+}
+
+.rule-card.violated {
+    background: #ffeaea;
+}
+.rule-card.violated .rule-description,
+.rule-card.violated .rule-status {
+    color: #d32f2f;
+}
+
+/* ==============================
+   DATA TABLE SECTION
+============================== */
+.data-table {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.data-table-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.data-table-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.data-grid-wrapper {
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 0.5rem;
+}
+
+/* --- DevExtreme DataGrid adjustments --- */
+.dx-datagrid {
+    width: 100% !important;
+    height: auto !important;
+    box-sizing: border-box;
+}
+
+/* --- Header --- */
+.dx-datagrid-headers {
+    background: #f5f6fa;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-bottom: 2px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* --- Rows --- */
+.dx-datagrid-rowsview .dx-row {
+    font-size: 0.9rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+.dx-datagrid-rowsview .dx-row:nth-child(even) {
+    background-color: #fafafa;
+}
+.dx-datagrid-rowsview .dx-row:hover {
+    background-color: #eaf4ff;
+}
+.dx-datagrid-rowsview .dx-row-focused {
+    background-color: #d2e8ff !important;
+}
+
+/* --- Alignment --- */
+.dx-datagrid .dx-column-indicators {
+    justify-content: center;
+}
+.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+    text-align: center;
+}
+.data-grid-wrapper .dx-datagrid .dx-row .dx-datagrid-cell-content,
+.data-grid-wrapper .dx-datagrid .dx-header-row .dx-datagrid-cell-content {
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+/* --- Accessibility cleanup --- */
+.dx-datagrid .dx-hidden-accessibility,
+.dx-hidden-accessibility,
+.dx-aria-description,
+.dx-aria-status,
+body .dx-aria-status,
+html .dx-aria-status,
+[data-reactroot] .dx-aria-status {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    top: -9999px !important;
+}
+
+/* ==============================
+   CHART SECTION
+============================== */
+.chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 0;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 0.25rem;
+    box-sizing: border-box;
+}
+
+.chart svg text,
+.chart-wrapper svg text {
+    overflow: visible !important;
+}
+
+.chart-title {
+    text-align: center;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Responsive container should always fill space */
+.recharts-wrapper svg {
+    height: 100% !important;
+}
+.chart-container,
+.chart,
+.recharts-responsive-container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.recharts-responsive-container {
+    flex: 1 1 auto;
+    display: flex;
+}
