@@ -32,27 +32,6 @@ export default function DataTable({ stats, selectedId, onSelectId }) {
         }
     }, [selectedId]);
 
-    // ✅ Remove DevExtreme ARIA status node on every render
-    useEffect(() => {
-        const hideAria = () => {
-            document.querySelectorAll(".dx-aria-status").forEach(el => {
-                el.style.display = "none";
-                el.style.visibility = "hidden";
-                el.style.height = "0";
-                el.style.overflow = "hidden";
-                el.style.position = "absolute";
-                el.style.top = "-9999px";
-            });
-        };
-
-        hideAria(); // initial
-        const observer = new MutationObserver(hideAria);
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        return () => observer.disconnect();
-    }, []);
-
-
 
     return (
         <div

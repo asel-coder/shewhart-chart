@@ -78,17 +78,33 @@ export default function ChartView ({ stats, selectedId, onSelectId }) {
                         dataKey="value"
                         stroke="#8884d8"
                         dot={({ cx, cy, payload }) => (
-                            <circle
-                                cx={cx}
-                                cy={cy}
-                                r={5}
-                                fill={payload.id === selectedId ? "#ff5722" : "#8884d8"}
-                                stroke="#fff"
-                                strokeWidth={1.5}
+                            <g
                                 style={{ cursor: "pointer" }}
                                 onClick={() => onSelectId(Number(payload.id))}
-                            />
+                            >
+                                {/* Bigger invisible click area */}
+                                <circle
+                                    cx={cx}
+                                    cy={cy}
+                                    r={20}          // Larger hitbox for easier clicking
+                                    fill="transparent"
+                                />
+
+                                {/* Visible dot */}
+                                <circle
+                                    cx={cx}
+                                    cy={cy}
+                                    r={5}
+                                    fill={payload.id === selectedId ? "#ff5722" : "#8884d8"}
+                                    stroke="#fff"
+                                    strokeWidth={1.5}
+                                />
+                            </g>
                         )}
+                    />
+
+
+                    )}
                     />
                 </LineChart>
             </ResponsiveContainer>

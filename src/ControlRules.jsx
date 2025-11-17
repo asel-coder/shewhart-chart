@@ -1,11 +1,4 @@
-import {
-    is14PointsAlternating, is15PointsWithin1σ,
-    is2of3Beyond2σ,
-    is4of5Beyond1σ,
-    is6PointsTrending,
-    is8PointsOnOneSide,
-    isNormalityViolated
-} from "./generateData.js";
+
 import React, { useMemo } from 'react';
 export default function ControlRules({ stats }) {
 
@@ -56,6 +49,7 @@ export default function ControlRules({ stats }) {
 
         return false;
     }, [stats.data]);
+
 
     const isNormalityViolated = useMemo(() => {
         if (!stats.data || stats.data.length === 0) return false;

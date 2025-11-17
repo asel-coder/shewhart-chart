@@ -13,25 +13,6 @@ function ChartDashboard() {
 
     const stats = useMemo(() => generateRandomData(25, 120, 10), []);
 
-    // ✅ Global fix: permanently hide DevExtreme’s ARIA status element
-    useEffect(() => {
-        const hideAria = () => {
-            document.querySelectorAll(".dx-aria-status").forEach(el => {
-                el.style.display = "none";
-                el.style.visibility = "hidden";
-                el.style.height = "0";
-                el.style.overflow = "hidden";
-                el.style.position = "absolute";
-                el.style.top = "-9999px";
-            });
-        };
-
-        hideAria(); // hide if already present
-        const observer = new MutationObserver(hideAria);
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        return () => observer.disconnect();
-    }, []);
 
     return (
         <div className="dashboard">
