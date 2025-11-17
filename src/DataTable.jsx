@@ -71,7 +71,7 @@ export default function DataTable({ stats, selectedId, onSelectId }) {
                     focusedRowKey={selectedId}
                     onFocusedRowChanged={(e) => {
                         const id = e.row?.data?.id;
-                        if (id) onSelectId(id);
+                        if (id && id !== selectedId) onSelectId(id);
                     }}
                     height="100%"
                     width="100%"
@@ -82,23 +82,18 @@ export default function DataTable({ stats, selectedId, onSelectId }) {
                     showRowLines={true}
                     selection={{ mode: "none" }}
                     hoverStateEnabled={true}
-                    onRowClick={(e) => {
-                        console.log("ROW CLICK", e);                     // 🧭 Debug: log the entire event object
-                        console.log("Event type:", e.event?.type);       // Check if it's a submit or click
-                        console.log("Event target:", e.event?.target);   // Inspect the clicked element
 
-                        // ✅ Prevent any default behavior that could trigger a reload
-                        if (e.event) {
+
+                    onRowClick={(e) => {
+                        // 🛑 Only prevent unexpected submit events
+                        if (e.event?.type === "submit") {
                             e.event.preventDefault();
                             e.event.stopPropagation();
+                            return;
                         }
 
-                        // ✅ Select the clicked sample
-                        if (e.data && e.data.id) {
-                            onSelectId(e.data.id);
-                        } else {
-                            console.warn("⚠️ No ID found in clicked row data", e.data);
-                        }
+                        const id = e.data?.id;
+                        if (id) onSelectId(id);
                     }}
                 >
                     <Paging enabled={false} />

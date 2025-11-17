@@ -12,6 +12,7 @@ import {
 export default function ChartView ({ stats, selectedId, onSelectId }) {
     if (!stats.data || stats.data.length === 0) return <p>No data provided</p>;
 
+
     return (
         <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height="100%">
@@ -72,6 +73,7 @@ export default function ChartView ({ stats, selectedId, onSelectId }) {
                         label="LCL"
                     />
                     <Line
+                        key={selectedId}
                         type="linear"
                         dataKey="value"
                         stroke="#8884d8"
@@ -84,7 +86,7 @@ export default function ChartView ({ stats, selectedId, onSelectId }) {
                                 stroke="#fff"
                                 strokeWidth={1.5}
                                 style={{ cursor: "pointer" }}
-                                onClick={() => onSelectId(payload.id)}
+                                onClick={() => onSelectId(Number(payload.id))}
                             />
                         )}
                     />

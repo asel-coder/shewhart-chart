@@ -84,13 +84,16 @@ html, body, #root {
    RULE CARDS
 ============================== */
 .rule-card {
-    height: 2rem; /* adjust this value */
-    padding: 1rem;
+    display: flex;                 /* <-- THIS WAS MISSING */
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;       /* center vertically */
+    align-items: center;           /* center horizontally */
+    height: 2rem;
+    padding: 1rem;
     font-size: 0.9rem;
     transition: transform 0.2s, box-shadow 0.2s;
 }
+
 
 .rule-card:hover {
     transform: translateY(-3px);
